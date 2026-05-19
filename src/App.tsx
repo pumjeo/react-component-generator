@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { PromptInput } from './components/PromptInput';
 import { ComponentCard } from './components/ComponentCard';
 import { useComponentGenerator } from './hooks/useComponentGenerator';
+import { useLocalStorage, STORAGE_KEYS } from './hooks/useLocalStorage';
+import { usePromptHistory } from './hooks/usePromptHistory';
 import type { Provider } from './types';
 import './App.css';
 
@@ -10,16 +12,31 @@ const PROVIDER_CONFIG = {
   google: { label: 'Google', placeholder: 'AIza...' },
 } as const;
 
+const VALID_PROVIDERS: Provider[] = ['anthropic', 'google'];
+
+const providerSerializer = {
+  serialize: (v: Provider) => JSON.stringify(v),
+  deserialize: (s: string): Provider => {
+    const parsed = JSON.parse(s) as string;
+    return VALID_PROVIDERS.includes(parsed as Provider) ? (parsed as Provider) : 'google';
+  },
+};
+
 function App() {
-  const [apiKey, setApiKey] = useState('');
+  const [apiKey, setApiKey] = useLocalStorage<string>(STORAGE_KEYS.API_KEY, '');
   const [showKey, setShowKey] = useState(false);
-  const [provider, setProvider] = useState<Provider>('google');
+  const [provider, setProvider] = useLocalStorage<Provider>(
+    STORAGE_KEYS.PROVIDER,
+    'google',
+    providerSerializer,
+  );
   const [envKeys, setEnvKeys] = useState<Record<Provider, boolean>>({
     anthropic: false,
     google: false,
   });
   const { components, isLoading, error, generate, removeComponent, clearAll } =
     useComponentGenerator();
+  const { history: promptHistory, addToHistory, clearHistory } = usePromptHistory();
 
   useEffect(() => {
     fetch('/api/config')
@@ -35,6 +52,7 @@ function App() {
       alert(`${PROVIDER_CONFIG[provider].label} API 키를 입력하거나 .env에 설정해주세요.`);
       return;
     }
+    addToHistory(prompt);
     generate(prompt, apiKey || undefined, provider);
   };
 
@@ -68,7 +86,12 @@ function App() {
 
       <main className="workspace">
         <section className="composer-panel" aria-label="컴포넌트 생성">
-          <PromptInput onGenerate={handleGenerate} isLoading={isLoading} />
+          <PromptInput
+            onGenerate={handleGenerate}
+            isLoading={isLoading}
+            promptHistory={promptHistory}
+            onClearHistory={clearHistory}
+          />
         </section>
 
         <aside className="settings-panel" aria-label="실행 설정">

@@ -434,6 +434,49 @@
   box-shadow: 0 6px 16px rgba(102, 126, 234, 0.15);
 }
 
+.example-chip--history {
+  background: var(--primary-soft);
+  border-color: rgba(102, 126, 234, 0.25);
+  color: var(--primary);
+}
+
+.example-chip--history:hover {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.12), rgba(245, 87, 108, 0.08));
+  border-color: var(--primary);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.15);
+}
+
+.prompt-examples--history {
+  margin-bottom: 6px;
+}
+
+.examples-label-row {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.btn-clear-history {
+  height: 24px;
+  padding: 0 10px;
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  color: var(--text-soft);
+  cursor: pointer;
+  font-size: 0.76rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.btn-clear-history:hover {
+  border-color: var(--danger);
+  color: var(--danger);
+  background: #fef2f2;
+}
+
 .error-banner {
   padding: 16px 18px;
   background: linear-gradient(135deg, #fef2f2, #fff5f5);

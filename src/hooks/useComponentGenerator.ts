@@ -1,5 +1,7 @@
 import { useState, useCallback } from 'react';
-import type { GeneratedComponent, Provider } from '../types';
+import type { GeneratedComponent, StoredComponent, Provider } from '../types';
+import { useLocalStorage, STORAGE_KEYS } from './useLocalStorage';
+import type { Serializer } from './useLocalStorage';
 
 interface UseComponentGeneratorReturn {
   components: GeneratedComponent[];
@@ -10,8 +12,29 @@ interface UseComponentGeneratorReturn {
   clearAll: () => void;
 }
 
+const componentSerializer: Serializer<GeneratedComponent[]> = {
+  serialize: (components) =>
+    JSON.stringify(
+      components.map((c): StoredComponent => ({
+        ...c,
+        createdAt: c.createdAt.toISOString(),
+      })),
+    ),
+  deserialize: (raw) => {
+    const stored = JSON.parse(raw) as StoredComponent[];
+    return stored.map((c): GeneratedComponent => {
+      const date = new Date(c.createdAt);
+      return { ...c, createdAt: isNaN(date.getTime()) ? new Date() : date };
+    });
+  },
+};
+
 export function useComponentGenerator(): UseComponentGeneratorReturn {
-  const [components, setComponents] = useState<GeneratedComponent[]>([]);
+  const [components, setComponents] = useLocalStorage<GeneratedComponent[]>(
+    STORAGE_KEYS.COMPONENTS,
+    [],
+    componentSerializer,
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
