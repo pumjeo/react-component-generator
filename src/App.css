@@ -745,6 +745,43 @@
   font-weight: 750;
 }
 
+.viewport-toggle {
+  display: flex;
+  gap: 4px;
+}
+
+.btn-viewport {
+  height: 30px;
+  padding: 0 12px;
+  background: var(--surface-subtle);
+  border: 1.5px solid var(--line);
+  border-radius: 6px;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn-viewport:hover {
+  background: var(--primary-soft);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.btn-viewport--active {
+  background: linear-gradient(135deg, var(--primary), #5568d3);
+  border-color: transparent;
+  color: #ffffff;
+}
+
+.preview-viewport {
+  width: 100%;
+  margin: 0 auto;
+  transition: max-width 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
 .preview-content {
   padding: 18px;
   background: #ffffff;
