@@ -63,12 +63,14 @@ export function PromptInput({ onGenerate, isLoading, promptHistory, onClearHisto
       </form>
       {promptHistory && promptHistory.length > 0 && (
         <div className="prompt-examples prompt-examples--history">
-          <span className="examples-label">최근 프롬프트</span>
-          {onClearHistory && (
-            <button className="btn-clear-history" onClick={onClearHistory} type="button">
-              삭제
-            </button>
-          )}
+          <div className="examples-label-row">
+            <span className="examples-label">최근 프롬프트</span>
+            {onClearHistory && (
+              <button className="btn-clear-history" onClick={onClearHistory} type="button">
+                삭제
+              </button>
+            )}
+          </div>
           {promptHistory.slice(0, 5).map((h) => (
             <button
               key={h}

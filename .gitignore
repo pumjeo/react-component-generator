@@ -27,3 +27,6 @@ dist-ssr
 .worklog/
 
 .env
+
+# Claude Code — project skills (personal AI tooling, not team convention)
+.claude/skills/

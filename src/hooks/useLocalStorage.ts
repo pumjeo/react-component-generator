@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 
 export const STORAGE_KEYS = {
   API_KEY:        'rcg:apiKey',
@@ -49,7 +49,7 @@ export function useLocalStorage<T>(
     readFromStorage(key, initialValue, serializer),
   );
 
-  const setValue = (value: T | ((prev: T) => T)) => {
+  const setValue = useCallback((value: T | ((prev: T) => T)) => {
     setStoredValue((prev) => {
       const newValue = typeof value === 'function'
         ? (value as (prev: T) => T)(prev)
@@ -57,7 +57,7 @@ export function useLocalStorage<T>(
       writeToStorage(key, newValue, serializer);
       return newValue;
     });
-  };
+  }, [key, serializer]);
 
   return [storedValue, setValue];
 }

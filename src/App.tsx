@@ -12,17 +12,24 @@ const PROVIDER_CONFIG = {
   google: { label: 'Google', placeholder: 'AIza...' },
 } as const;
 
+const VALID_PROVIDERS: Provider[] = ['anthropic', 'google'];
+
+const providerSerializer = {
+  serialize: (v: Provider) => JSON.stringify(v),
+  deserialize: (s: string): Provider => {
+    const parsed = JSON.parse(s) as string;
+    return VALID_PROVIDERS.includes(parsed as Provider) ? (parsed as Provider) : 'google';
+  },
+};
+
 function App() {
-  const VALID_PROVIDERS: Provider[] = ['anthropic', 'google'];
   const [apiKey, setApiKey] = useLocalStorage<string>(STORAGE_KEYS.API_KEY, '');
   const [showKey, setShowKey] = useState(false);
-  const [provider, setProvider] = useLocalStorage<Provider>(STORAGE_KEYS.PROVIDER, 'google', {
-    serialize: (v) => JSON.stringify(v),
-    deserialize: (s) => {
-      const parsed = JSON.parse(s) as string;
-      return VALID_PROVIDERS.includes(parsed as Provider) ? (parsed as Provider) : 'google';
-    },
-  });
+  const [provider, setProvider] = useLocalStorage<Provider>(
+    STORAGE_KEYS.PROVIDER,
+    'google',
+    providerSerializer,
+  );
   const [envKeys, setEnvKeys] = useState<Record<Provider, boolean>>({
     anthropic: false,
     google: false,
